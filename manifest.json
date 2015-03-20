@@ -1,0 +1,25 @@
+{
+  "manifest_version":2,
+  "name":"Youtube Rating Loader",
+  "description":"Get the likes/dislikes counts for a video.",
+  "version":"0.9",
+  "permissions": [
+    "background",
+    "identity"
+  ],
+  "background": {
+    "scripts": ["jquery-2.1.3.min.js","background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["jquery-2.1.3.min.js", "getRating.js"]
+    }
+  ],
+  "oauth2": {
+      "client_id": "882955056595-7dmirhoss8t4usa66oqnm2qssfcj2eoa.apps.googleusercontent.com",
+      "scopes": [
+        "https://www.googleapis.com/auth/youtube"
+      ]
+    }
+}
