@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }, function(data) {
       // TODO check for quota message
       if(data.items.length > 0) {
-        sendResponse(data.items[0].statistics);
+        sendResponse(data.items);
       }
     });
   }
