@@ -1,21 +1,31 @@
-#getrating-overlay {
+.getrating-background {
+  top:-20px;
+  z-index:2;
   position:absolute;
   width:100%;
-  height:100%;
-  background-color:rgba(0,0,0,0.7);
-  top:0;
-  left:0;
-  font-size:20px;
-  line-height:30px;
-  padding-top:20px;
+  height:25px;
+  padding-bottom:30px;
+  background-color:red;
+  background-clip:content-box;
   text-align:center;
-  color:white;
+  transition: top 0.5s;
 }
 
-#getrating-counts, #getrating-score {
+.getrating-background:hover {
+  top:0px
+}
+
+.getrating-bar {
+  height:100%;
+  background-color:blue;
+}
+
+.getrating-label {
   width:100%;
-}
+  height:100%;
+  position:absolute;
+  font-size:20px;
+  line-height:25px;
+  color:black;
 
-.video-list-item #getrating-counts {
-  display:none;
 }
