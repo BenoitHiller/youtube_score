@@ -2,7 +2,7 @@
   "manifest_version":2,
   "name":"YouTube™ Rating Loader",
   "description":"Show the like/dislike ratio on video previews on YouTube.",
-  "version":"1.0.0",
+  "version":"1.0.1",
   "icons": { 
     "16": "icon16.png",
     "48": "icon48.png",
@@ -18,7 +18,7 @@
     {
       "run_at" : "document_end",
       "matches": ["https://www.youtube.com/*"],
-      "js": ["jquery-2.1.3.min.js", "ratingCache.js", "getRating.js"],
+      "js": ["thirdParty/jquery-2.1.3.min.js", "ratingCache.js", "getRating.js"],
       "css": ["getRating.css"]
     }
   ]
