@@ -21,4 +21,4 @@ So I have made this extension is available under the GPLv3 and it requests permi
 
 # Installation
 
-The extension can be installed through the chrome web store at: `INSERT LINK`
+The extension can be installed through the [chrome web store](https://chrome.google.com/webstore/detail/youtube-rating-loader/klbndepaecfpfbmoecedmofogihhlpbm).
