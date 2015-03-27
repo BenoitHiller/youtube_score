@@ -1,18 +1,34 @@
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  function queryData(token) {
+(function() {
+  var API_KEY = "AIzaSyBP1AutlCTtxEGOW2ophDg4u7PIWJIre_k";
+
+  //TODO: add a second level of caching here.
+
+  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    "use strict";
+
     $.get("https://www.googleapis.com/youtube/v3/videos", {
-      "access_token": token,
+      "key": API_KEY,
       "part": "statistics",
       "id": request.id
     }, function(data) {
-      // TODO check for quota message
-      if(data.items.length > 0) {
+      if (data.items.length > 0) {
         sendResponse(data.items);
       }
+    }).fail(function(error) {
+      if (error.responseText) {
+        var data = JSON.parse(error.responseText);
+        if (data && data.error && data.error.length) {
+          console.log("Error retrieving rating data: %s. Code: %s", data.error.message, data.error.code);
+        } else if (data) {
+          console.log(data);
+        } else {
+          console.log("Error retrieving rating data");
+        }
+      } else {
+        console.log("Error retrieving rating data: %s. Code: %d", error.statusText, error.status);
+      }
     });
-  }
 
-  var auth_success = chrome.identity.getAuthToken({ 'interactive': false }, queryData);
-  // TODO display failure notice somewhere
-  return true;
-});
+    return true;
+  });
+}());

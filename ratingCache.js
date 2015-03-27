@@ -1,8 +1,10 @@
 var youtube_score;
 
 (function(youtube_score) {
+  "use strict";
 
   var MAX_ITEMS = 50;
+  var EXPIRY_TIME = 60 * 60;
 
   function Cache() {
     this.items = new Map();
@@ -21,20 +23,20 @@ var youtube_score;
     }));
 
     var targets = $.makeArray(ids.filter(function(element) {
-      return element != key && !cache.hasKey(element) && !cache.querying.has(element);
-    }).filter(function(index,element,array) {
+      return element !== key && !cache.hasKey(element) && !cache.querying.has(element);
+    }).filter(function(index) {
       return index < MAX_ITEMS - 1;
     }));
     
     targets.push(key);
 
-    var promise = new Promise(function(resolve,reject) {
+    var promise = new Promise(function(resolve) {
 
       chrome.runtime.sendMessage({"id": targets.join(",")}, function(data) {
-        var now = Date.now();
-        data.forEach(function(element, index, array) {
+        var expiry = Date.now() + EXPIRY_TIME;
+        data.forEach(function(element) {
           cache.set(element.id, { 
-            "expiry": now,
+            "expiry": expiry,
             "likes": parseInt(element.statistics.likeCount),
             "dislikes": parseInt(element.statistics.dislikeCount)
           });
@@ -57,7 +59,7 @@ var youtube_score;
 
   Cache.prototype.wrappedCallback = function(key, callback) {
     callback(this.items.get(key));
-  }
+  };
 
   Cache.prototype.getDo = function(key, callback) {
     if (!(this.hasKey(key))) {
@@ -81,18 +83,26 @@ var youtube_score;
 
   Cache.prototype.set = function(key,data) {
     this.items.set(key,data);
+  };
+
+  Cache.prototype.sweep = function() {
+    var now = Date.now();
+    this.items.forEach(function(key, value, map) {
+      if (value.expiry <= now) {
+        map.delete(key);
+      }
+    });
   }
 
   Cache.prototype.hasKey = function(key) {
     if (this.items.has(key)) {
-      if (this.items.get(key).expiry <= Date.now()) {
+      if (this.items.get(key).expiry > Date.now()) {
         return true;
       } else {
-        // TODO improve to do propper invalidation sweep;
-        this.items.delete(key);
+        this.sweep();
       }
     }
     return false;
-  }
+  };
 
 }(youtube_score = youtube_score || {}));

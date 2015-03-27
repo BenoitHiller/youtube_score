@@ -1,12 +1,13 @@
 var youtube_score;
 
 ;(function(youtube_score) {
+  "use strict";
   var CHILDREN = {"childList":true};
 
   function attachPageObserver(pageObserver) {
     var feedList = $("#feed ol.section-list")[0];
     if(feedList) {
-      pageObserver.observe(feedList,CHILDREN)
+      pageObserver.observe(feedList,CHILDREN);
     } else {
       var related = $("#watch-more-related")[0];
       if(related) {
@@ -33,12 +34,16 @@ var youtube_score;
   }
 
   function formatPercent(data) {
+    if (data) {
       var percent = data.likes / (data.dislikes + data.likes);
       if (percent > 0.99) {
         return Math.round(percent * 10000)/100;
       } else {
         return Math.round(percent * 100);
       }
+    } else {
+      return NaN;
+    }
   }
 
   function DivCache() {
@@ -48,21 +53,22 @@ var youtube_score;
 
   DivCache.prototype.getDiv = function(percent) {
     var value = percent + "%";
+    var node, bar, text, background;
     if(this.divCount > 0) {
       this.divCount--;
 
-      var node = this.divs[this.divCount];
-      var text = node[0].children[0];
-      var bar = node[0].children[1];
+      node = this.divs[this.divCount];
+      text = node[0].children[0];
+      bar = node[0].children[1];
 
       $(text).html(value);
       $(bar).css('width', value);
 
       return node;
     } else {
-      var bar = $("<div/>", {"class": "getrating-bar", "style":"width:" + value});
-      var text = $("<div/>", {"class": "getrating-label", "text": value});
-      var background = $("<div/>", {"class": "getrating-background"});
+      bar = $("<div/>", {"class": "getrating-bar", "style":"width:" + value});
+      text = $("<div/>", {"class": "getrating-label", "text": value});
+      background = $("<div/>", {"class": "getrating-background"});
       
       text.appendTo(background);
       bar.appendTo(background);
@@ -157,7 +163,7 @@ var youtube_score;
 
     attachVideoObserver(videoObserver);
 
-    var observer = new MutationObserver(function(pageObserver, videoObserver,mutations) {
+    var observer = new MutationObserver(function(pageObserver, videoObserver) {
       divCache.freeAll();
 
       pageObserver.disconnect();
