@@ -2,7 +2,7 @@
   "manifest_version":2,
   "name":"YouTube™ Rating Loader",
   "description":"Show the like/dislike ratio on video previews on YouTube.",
-  "version":"1.0.3",
+  "version":"1.1.0",
   "icons": { 
     "16": "icon16.png",
     "48": "icon48.png",

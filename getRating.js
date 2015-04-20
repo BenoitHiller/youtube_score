@@ -5,14 +5,15 @@ var youtube_score;
   var CHILDREN = {"childList":true};
 
   function attachPageObserver(pageObserver) {
+    var related;
+    var playlist;
     var feedList = $("#feed ol.section-list")[0];
     if(feedList) {
       pageObserver.observe(feedList,CHILDREN);
-    } else {
-      var related = $("#watch-more-related")[0];
-      if(related) {
-        pageObserver.observe(related, CHILDREN);
-      }
+    } else if(related = $("#watch-more-related")[0]) {
+      pageObserver.observe(related, CHILDREN);
+    } else if(playlist = $("#pl-load-more-destination")[0]) {
+      pageObserver.observe(playlist, CHILDREN);
     }
   }
 
@@ -103,23 +104,46 @@ var youtube_score;
       });
     }
 
-    function addRatingBars(node,dataField) {
-      var selector = "[" + dataField + "]";
-      node.find(selector).each(function() {
-        var node = this;
-        var id = $(node).attr(dataField);
-        cache.getDo(id,decorate.bind(null,node));
-      });
+    function decorateAll(node) {
+      addRatingBars(node, "data-context-item-id");
+      addRatingBars(node, "data-vid");
+      addRatingBars(node, "data-video-id", true, ".pl-video");
+      addRatingBars(node, "data-video-id", false, ".yt-uix-scroller-scroll-unit");
+      addBarsToShelf(node);
       node = null;
     }
 
-    function decorate(node, data) {
+    function addRatingBars(node, dataField, toParent, prefix) {
+      if (toParent === undefined) {
+        toParent = false;
+      }
+      if (prefix === undefined) {
+        prefix = "";
+      }
+      var selector = prefix + "[" + dataField + "]";
+      var nodes = node.find(selector);
+      if(nodes.length == 0) {
+        nodes = node;
+      }
+      nodes.each(function() {
+        var node = this;
+        var id = $(node).attr(dataField);
+        cache.getDo(id,decorate.bind(null,node,toParent));
+      });
+      node = null;
+      nodes = null;
+    }
+
+    function decorate(node, toParent, data) {
       var percent = formatPercent(data);
       if(!isNaN(percent)) {
         var background = divCache.getDiv(percent);
         var thumbnail = $(node).find(".yt-thumb");
         if(!thumbnail.length) {
           thumbnail = $(node);
+        }
+        if(toParent) {
+          thumbnail = thumbnail.parent();
         }
         background.prependTo(thumbnail);
       }
@@ -133,16 +157,13 @@ var youtube_score;
       }
     }
 
-    addRatingBars(content, "data-context-item-id");
-    addRatingBars(content, "data-vid");
-    addBarsToShelf(content);
+    decorateAll(content);
 
     var pageObserver = new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
         $.each(mutation.addedNodes, function(i,node) {
           var wrappedNode = $(node);
-          addRatingBars(wrappedNode, "data-context-item-id");
-          addRatingBars(wrappedNode, "data-vid");
+          decorateAll(wrappedNode);
         });
       });
     });
@@ -169,10 +190,9 @@ var youtube_score;
       pageObserver.disconnect();
       videoObserver.disconnect();
 
-      var content = $("#content");
-      addRatingBars(content, "data-context-item-id");
-      addRatingBars(content, "data-vid");
-      addBarsToShelf(content);
+      var content_node = $("#content");
+
+      decorateAll(content_node);
 
       attachPageObserver(pageObserver);
       attachVideoObserver(videoObserver);
