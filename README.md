@@ -21,4 +21,8 @@ So I have made this extension is available under the GPLv3 and it requests permi
 
 # Installation
 
-The extension can be installed through the [chrome web store](https://chrome.google.com/webstore/detail/youtube-rating-loader/klbndepaecfpfbmoecedmofogihhlpbm).
+The extension can be installed through the [chrome web store](https://chrome.google.com/webstore/detail/youtube-rating-loader/klbndepaecfpfbmoecedmofogihhlpbm). Alternatively you can just load the repository as an unpacked extension.
+
+# Building
+
+To build the `youtube_score.zip` file for uploading you just run `make`.
