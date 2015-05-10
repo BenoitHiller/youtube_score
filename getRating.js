@@ -90,7 +90,6 @@ var youtube_score;
   (function() {
 
     var cache = new youtube_score.Cache();
-    var content = $("#content");
 
     var divCache = new DivCache();
 
@@ -157,7 +156,7 @@ var youtube_score;
       }
     }
 
-    decorateAll(content);
+    decorateAll($("#page-container"));
 
     var pageObserver = new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
@@ -190,7 +189,7 @@ var youtube_score;
       pageObserver.disconnect();
       videoObserver.disconnect();
 
-      var content_node = $("#content");
+      var content_node = $("#page-container");
 
       decorateAll(content_node);
 
@@ -198,11 +197,10 @@ var youtube_score;
       attachVideoObserver(videoObserver);
 
     }.bind(null,pageObserver, videoObserver));
-    observer.observe(content[0], CHILDREN);
+    observer.observe($("#content")[0], CHILDREN);
 
     // We have to clear the observer references as if there is a cycle between observers
     // that seems to cause youtube to leak memory as you navigate between pages.
-    content = null;
     observer = null;
     pageObserver = null;
     videoObserver = null;
