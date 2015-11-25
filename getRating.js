@@ -2,7 +2,8 @@ var youtube_score;
 
 ;(function(youtube_score) {
   "use strict";
-  var CHILDREN = {"childList":true};
+  var CHILDREN = {childList: true};
+  var SUB_CHILDREN = {childList: true, subtree: true};
 
   function attachPageObserver(pageObserver) {
     var related;
@@ -121,14 +122,13 @@ var youtube_score;
       }
       var selector = prefix + "[" + dataField + "]";
       var nodes = node.find(selector);
-      if(nodes.length == 0) {
-        nodes = node;
+      if(nodes.length > 0) {
+        nodes.each(function() {
+          var node = this;
+          var id = $(node).attr(dataField);
+          cache.getDo(id,decorate.bind(null,node,toParent));
+        });
       }
-      nodes.each(function() {
-        var node = this;
-        var id = $(node).attr(dataField);
-        cache.getDo(id,decorate.bind(null,node,toParent));
-      });
       node = null;
       nodes = null;
     }
@@ -158,17 +158,6 @@ var youtube_score;
 
     decorateAll($("#page-container"));
 
-    var pageObserver = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        $.each(mutation.addedNodes, function(i,node) {
-          var wrappedNode = $(node);
-          decorateAll(wrappedNode);
-        });
-      });
-    });
-
-    attachPageObserver(pageObserver);
-
     var videoObserver = new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
         $.each(mutation.addedNodes, function(i,node) {
@@ -181,28 +170,26 @@ var youtube_score;
       });
     });
 
-    attachVideoObserver(videoObserver);
+    // TODO: fix this
+    // attachVideoObserver(videoObserver);
 
-    var observer = new MutationObserver(function(pageObserver, videoObserver) {
-      divCache.freeAll();
+    var allObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        $.each(mutation.addedNodes, function(i,node) {
+          //console.log(node);
+          //console.log(node.nodeName);
+          if (node.nodeName != "#text" && node.className != "getrating-background") {
+            var wrappedNode = $(node);
+            if (wrappedNode.find(".yt-thumb, .thumb-wrapper").length > 0) {
+              decorateAll(wrappedNode);
+            }
+          }
+        });
+      });
+    });
+    allObserver.observe($("#page")[0], SUB_CHILDREN);
 
-      pageObserver.disconnect();
-      videoObserver.disconnect();
 
-      var content_node = $("#page-container");
-
-      decorateAll(content_node);
-
-      attachPageObserver(pageObserver);
-      attachVideoObserver(videoObserver);
-
-    }.bind(null,pageObserver, videoObserver));
-    observer.observe($("#content")[0], CHILDREN);
-
-    // We have to clear the observer references as if there is a cycle between observers
-    // that seems to cause youtube to leak memory as you navigate between pages.
-    observer = null;
-    pageObserver = null;
-    videoObserver = null;
+    allObserver = null;
   }());
 }(youtube_score = youtube_score || {}));
