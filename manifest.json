@@ -16,8 +16,8 @@
     {
       "run_at" : "document_end",
       "matches": ["https://www.youtube.com/*"],
-      "js": ["thirdParty/jquery-2.1.3.min.js", "ratingCache.js", "getRating.js"],
-      "css": ["getRating.css"]
+      "js": ["thirdParty/jquery-2.1.3.min.js", "ratingCache.js", "observer.js"],
+      "css": ["youtube.css"]
     }
   ]
 }

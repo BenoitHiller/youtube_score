@@ -4,7 +4,7 @@ var youtube_score;
   "use strict";
 
   var MAX_ITEMS = 50;
-  var EXPIRY_TIME = 60 * 60;
+  var EXPIRY_TIME = 60 * 60 * 1000;
 
   function Cache() {
     this.items = new Map();
@@ -22,8 +22,8 @@ var youtube_score;
       return $(this).attr('data-vid');
     }));
 
-    var targets = $.makeArray(ids.filter(function(element) {
-      return element !== key && !cache.hasKey(element) && !cache.querying.has(element);
+    var targets = $.makeArray(ids.filter(function() {
+      return this !== key && !cache.hasKey(this) && !cache.querying.has(this);
     }).filter(function(index) {
       return index < MAX_ITEMS - 1;
     }));
@@ -92,7 +92,7 @@ var youtube_score;
         map.delete(key);
       }
     });
-  }
+  };
 
   Cache.prototype.hasKey = function(key) {
     if (this.items.has(key)) {
