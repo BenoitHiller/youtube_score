@@ -1,4 +1,4 @@
-JS_FILES := $(wildcard *.js) $(wildcard thirdParty/*.js)
+JS_FILES := $(wildcard *.js) $(wildcard vendor/*.js)
 STYLES := $(wildcard *.css)
 ICONS := $(wildcard share/icon*.png)
 TARGETS := $(JS_FILES) $(STYLES) $(ICONS) manifest.json LICENSE
