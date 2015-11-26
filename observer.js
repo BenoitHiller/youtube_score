@@ -201,6 +201,24 @@ var youtube_score;
     }
   }
 
+  class SearchObserver extends AbstractObserver {
+    constructor() {
+      super(".search-header", ".item-section");
+    }
+
+    _findTargets() {
+      var observer = this;
+      $("li .yt-lockup-video").each(function() {
+        var node = $(this);
+        if (!node.find(".getrating-bar").length) {
+          var id = node.attr("data-context-item-id");
+          var thumbnail = node.find(".yt-thumb")[0];
+          cache.getDo(id, observer.decorate.bind(observer, thumbnail));
+        }
+      });
+    }
+  }
+
   class PlayerPlaylistObserver extends AbstractObserver {
     constructor() {
       super("#playlist-autoscroll-list", "#playlist-autoscroll-list");
@@ -309,6 +327,7 @@ var youtube_score;
       new FeedObserver(),
       new PlaylistObserver(),
       new ChannelObserver(),
+      new SearchObserver(),
       new GroupingObserver("#watch7-container", "#watch7-container", [new RelatedObserver()])
   ]).bind("#content");
 
