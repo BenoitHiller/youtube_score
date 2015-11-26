@@ -1,6 +1,6 @@
 JS_FILES := $(wildcard *.js) $(wildcard thirdParty/*.js)
 STYLES := $(wildcard *.css)
-ICONS := $(wildcard icon*.png)
+ICONS := $(wildcard share/icon*.png)
 TARGETS := $(JS_FILES) $(STYLES) $(ICONS) manifest.json LICENSE
 
 ZIP_NAME := youtube_score.zip
