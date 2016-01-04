@@ -239,7 +239,8 @@ var youtube_score;
 
   class ChannelObserver extends AbstractObserver {
     constructor() {
-      super(".channel-header", "#channels-browse-content-grid");
+      //TODO separate out the different kind of channels because this is hacky
+      super(".channel-header", "#channels-browse-content-grid, #browse-items-primary");
     }
 
     _findTargets() {
@@ -259,6 +260,15 @@ var youtube_score;
           var child = node.find("a")[0];
           var url = $(child).attr("href");
           var id = getParameters(url).get("v");
+          var thumbnail = node.find(".yt-thumb")[0];
+          cache.getDo(id, observer.decorate.bind(observer, thumbnail));
+        }
+      });
+
+      $(".feed-item-container [data-context-item-id]").each(function() {
+        var node = $(this);
+        if (!node.find(".getrating-bar").length) {
+          var id = node.attr("data-context-item-id");
           var thumbnail = node.find(".yt-thumb")[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
