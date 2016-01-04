@@ -1,4 +1,7 @@
-*.zip
 *.xcf
 screenshot*.png
 playlist*.png
+node_modules
+bower_components
+build
+vendor
