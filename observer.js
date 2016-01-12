@@ -239,12 +239,12 @@ var youtube_score;
 
   class ChannelObserver extends AbstractObserver {
     constructor() {
-      //TODO separate out the different kind of channels because this is hacky
-      super(".channel-header", "#channels-browse-content-grid, #browse-items-primary");
+      super(".channel-header", "#browse-items-primary");
     }
 
     _findTargets() {
       var observer = this;
+      // TODO: Determine if this is a duplicate
       $(".channels-content-item, .expanded-shelf-content-item-wrapper").each(function() {
         var node = $(this);
         if (!node.find(".getrating-bar").length) {
@@ -269,6 +269,25 @@ var youtube_score;
         var node = $(this);
         if (!node.find(".getrating-bar").length) {
           var id = node.attr("data-context-item-id");
+          var thumbnail = node.find(".yt-thumb")[0];
+          cache.getDo(id, observer.decorate.bind(observer, thumbnail));
+        }
+      });
+    }
+  }
+
+  class ChannelVideosObserver extends AbstractObserver {
+    constructor() {
+      super("#channels-browse-content-grid", "#channels-browse-content-grid");
+    }
+
+    _findTargets() {
+      var observer = this;
+      $(".channels-content-item, .expanded-shelf-content-item-wrapper").each(function() {
+        var node = $(this);
+        if (!node.find(".getrating-bar").length) {
+          var child = node.find("[data-context-item-id]")[0];
+          var id = $(child).attr("data-context-item-id");
           var thumbnail = node.find(".yt-thumb")[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
@@ -337,6 +356,7 @@ var youtube_score;
       new FeedObserver(),
       new PlaylistObserver(),
       new ChannelObserver(),
+      new ChannelVideosObserver(),
       new SearchObserver(),
       new GroupingObserver("#watch7-container", "#watch7-container", [new RelatedObserver()])
   ]).bind("#content");
