@@ -11,21 +11,21 @@
   transition: top 0.5s;
 }
 
-.pl-video .getrating-background {
+.pl-video .getrating-background, .watch-queue-item .getrating-background {
   top:-17px;
   height:21px;
   padding-bottom:30px;
 }
 
-.pl-video .getrating-label {
+.pl-video .getrating-label, .watch-queue-item .getrating-label {
   position:absolute;
   font-size:16px;
   line-height:21px;
-  font-weight:bold;
+  /*font-weight:bold;*/
   color:white;
 }
 
-.pl-video .addto-watch-later-button, .pl-video .addto-watch-later-button-sign-in {
+.pl-video .addto-watch-later-button, .pl-video .addto-watch-later-button-sign-in, .watch-queue-item .addto-watch-later-button, .watch-queue-item .addto-watch-later-button-sign-in {
   z-index: 3;
 }
 

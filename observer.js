@@ -201,6 +201,24 @@ var youtube_score;
     }
   }
 
+  class QueueObserver extends AbstractObserver {
+    constructor() {
+      super("#watch-queue", ".watch-queue-items-list");
+    }
+
+    _findTargets() {
+      var observer = this;
+      $(".watch-queue-item").each(function() {
+        var node = $(this);
+        if (!node.find(".getrating-bar").length) {
+          var id = node.attr("data-video-id");
+          var thumbnail = node.find(".video-thumb")[0];
+          cache.getDo(id, observer.decorate.bind(observer, thumbnail));
+        }
+      });
+    }
+  }
+
   class SearchObserver extends AbstractObserver {
     constructor() {
       super(".search-header", ".item-section");
@@ -355,6 +373,7 @@ var youtube_score;
   new ObserverMonitor([
       new FeedObserver(),
       new PlaylistObserver(),
+      new QueueObserver(),
       new ChannelObserver(),
       new ChannelVideosObserver(),
       new SearchObserver(),
