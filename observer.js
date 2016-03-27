@@ -125,7 +125,7 @@ var youtube_score;
 
     _findTargets() {
       var observer = this;
-      $(".yt-shelf-grid-item, .expanded-shelf-content-item").each(function() {
+      $(".yt-shelf-grid-item, .expanded-shelf-content-item, .lohp-large-shelf-container, .lohp-medium-shelf").each(function() {
         var node = $(this);
         if (!node.find(".getrating-bar").length) {
           var child = this.childNodes[0];
