@@ -137,6 +137,26 @@ var youtube_score;
     }
   }
 
+  // Subscriptions and Trending feeds
+  class OtherFeedObserver extends AbstractObserver {
+    constructor() {
+      super("#page.feed #browse-items-primary", ".section-list");
+    }
+
+    _findTargets() {
+      var observer = this;
+      $(".yt-shelf-grid-item, .expanded-shelf-content-item").each(function() {
+        var node = $(this);
+        if (!node.find(".getrating-bar").length) {
+          var child = this.childNodes[0];
+          var id = $(child).attr("data-context-item-id");
+          var thumbnail = node.find(".yt-thumb")[0];
+          cache.getDo(id, observer.decorate.bind(observer, thumbnail));
+        }
+      });
+    }
+  }
+
   class RelatedObserver extends AbstractObserver {
     constructor() {
       super("#watch-related", "#watch-more-related");
@@ -372,6 +392,7 @@ var youtube_score;
 
   new ObserverMonitor([
       new FeedObserver(),
+      new OtherFeedObserver(),
       new PlaylistObserver(),
       new QueueObserver(),
       new ChannelObserver(),
