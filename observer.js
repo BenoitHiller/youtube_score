@@ -1,7 +1,7 @@
 var youtube_score;
 
 ;(function(youtube_score) {
-  "use strict";
+  'use strict';
   var CHILDREN = {childList: true};
 
   class DivCache {
@@ -11,9 +11,9 @@ var youtube_score;
     }
 
     getDiv(percent) {
-      var value = percent + "%";
+      var value = percent + '%';
       var node, bar, text, background;
-      if(this.divCount > 0) {
+      if (this.divCount > 0) {
         this.divCount--;
 
         node = this.divs[this.divCount];
@@ -25,10 +25,10 @@ var youtube_score;
 
         return node;
       } else {
-        bar = $("<div/>", {"class": "getrating-bar", "style":"width:" + value});
-        text = $("<div/>", {"class": "getrating-label", "text": value});
-        background = $("<div/>", {"class": "getrating-background"});
-        
+        bar = $('<div/>', {'class': 'getrating-bar', 'style': 'width:' + value});
+        text = $('<div/>', {'class': 'getrating-label', 'text': value});
+        background = $('<div/>', {'class': 'getrating-background'});
+
         text.appendTo(background);
         bar.appendTo(background);
 
@@ -57,11 +57,11 @@ var youtube_score;
   }
 
   function getParameters(string) {
-    var search = string.replace(/^[^?]*\?/, "");
-    var components = search.split("&");
+    var search = string.replace(/^[^?]*\?/, '');
+    var components = search.split('&');
     var parameters = new Map();
     $.each(components, function() {
-      var parts = this.split("=");
+      var parts = this.split('=');
       parameters.set(decodeURIComponent(parts[0]), decodeURIComponent(parts[1]));
     });
     return parameters;
@@ -69,7 +69,7 @@ var youtube_score;
 
   /*
    * An observer is defined as providing the following functions
-   * 
+   *
    * match() -> boolean: function to check if the observer should be attached
    * attach(): called after #content changes if match returns true
    * detach(): called after #content changes if the observer was attached
@@ -120,17 +120,36 @@ var youtube_score;
 
   class FeedObserver extends AbstractObserver {
     constructor() {
-      super("#feed", ".section-list");
+      super('#feed', '.section-list');
     }
 
     _findTargets() {
       var observer = this;
-      $(".yt-shelf-grid-item, .expanded-shelf-content-item, .lohp-large-shelf-container, .lohp-medium-shelf").each(function() {
+      $('.yt-shelf-grid-item, .expanded-shelf-content-item, .lohp-large-shelf-container, .lohp-medium-shelf').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
+        if (!node.find('.getrating-bar').length) {
           var child = this.childNodes[0];
-          var id = $(child).attr("data-context-item-id");
-          var thumbnail = node.find(".yt-thumb")[0];
+          var id = $(child).attr('data-context-item-id');
+          var thumbnail = node.find('.yt-thumb')[0];
+          cache.getDo(id, observer.decorate.bind(observer, thumbnail));
+        }
+      });
+    }
+  }
+
+  class HistoryObserver extends AbstractObserver {
+    constructor() {
+      // This loads duplicates with the one below it. Needs fix.
+      super('#watch-history-pause-button', '.item-section');
+    }
+
+    _findTargets() {
+      var observer = this;
+      $('.item-section > li > [data-context-item-id]').each(function() {
+        var node = $(this);
+        if (!node.find('.getrating-bar').length) {
+          var id = node.attr('data-context-item-id');
+          var thumbnail = node.find('.yt-thumb')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
@@ -140,17 +159,17 @@ var youtube_score;
   // Subscriptions and Trending feeds
   class OtherFeedObserver extends AbstractObserver {
     constructor() {
-      super("#page.feed #browse-items-primary", ".section-list");
+      super('[aria-selected="true"]:contains(Trending), [aria-selected="true"]:contains(Subscriptions)', '.section-list');
     }
 
     _findTargets() {
       var observer = this;
-      $(".yt-shelf-grid-item, .expanded-shelf-content-item").each(function() {
+      $('.yt-shelf-grid-item, .expanded-shelf-content-item').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
+        if (!node.find('.getrating-bar').length) {
           var child = this.childNodes[0];
-          var id = $(child).attr("data-context-item-id");
-          var thumbnail = node.find(".yt-thumb")[0];
+          var id = $(child).attr('data-context-item-id');
+          var thumbnail = node.find('.yt-thumb')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
@@ -159,17 +178,17 @@ var youtube_score;
 
   class RelatedObserver extends AbstractObserver {
     constructor() {
-      super("#watch-related", "#watch-more-related");
+      super('#watch-related', '#watch-more-related');
     }
 
     _findTargets() {
       var observer = this;
-      $(".related-list-item").each(function() {
+      $('.related-list-item').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
-          var child = node.find("[data-vid]")[0];
-          var id = $(child).attr("data-vid");
-          var thumbnail = node.find(".yt-uix-simple-thumb-wrap")[0];
+        if (!node.find('.getrating-bar').length) {
+          var child = node.find('[data-vid]')[0];
+          var id = $(child).attr('data-vid');
+          var thumbnail = node.find('.yt-uix-simple-thumb-wrap')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
@@ -205,16 +224,16 @@ var youtube_score;
 
   class PlaylistObserver extends AbstractObserver {
     constructor() {
-      super("#pl-video-list", "#pl-load-more-destination");
+      super('#pl-video-list', '#pl-load-more-destination');
     }
 
     _findTargets() {
       var observer = this;
-      $(".pl-video").each(function() {
+      $('.pl-video').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
-          var id = node.attr("data-video-id");
-          var thumbnail = node.find(".pl-video-thumb")[0];
+        if (!node.find('.getrating-bar').length) {
+          var id = node.attr('data-video-id');
+          var thumbnail = node.find('.pl-video-thumb')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
@@ -223,16 +242,16 @@ var youtube_score;
 
   class QueueObserver extends AbstractObserver {
     constructor() {
-      super("#watch-queue", ".watch-queue-items-list");
+      super('#watch-queue', '.watch-queue-items-list');
     }
 
     _findTargets() {
       var observer = this;
-      $(".watch-queue-item").each(function() {
+      $('.watch-queue-item').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
-          var id = node.attr("data-video-id");
-          var thumbnail = node.find(".video-thumb")[0];
+        if (!node.find('.getrating-bar').length) {
+          var id = node.attr('data-video-id');
+          var thumbnail = node.find('.video-thumb')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
@@ -241,16 +260,16 @@ var youtube_score;
 
   class SearchObserver extends AbstractObserver {
     constructor() {
-      super(".search-header", ".item-section");
+      super('.search-header', '.item-section');
     }
 
     _findTargets() {
       var observer = this;
-      $("li .yt-lockup-video").each(function() {
+      $('li .yt-lockup-video').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
-          var id = node.attr("data-context-item-id");
-          var thumbnail = node.find(".yt-thumb")[0];
+        if (!node.find('.getrating-bar').length) {
+          var id = node.attr('data-context-item-id');
+          var thumbnail = node.find('.yt-thumb')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
@@ -259,16 +278,16 @@ var youtube_score;
 
   class PlayerPlaylistObserver extends AbstractObserver {
     constructor() {
-      super("#playlist-autoscroll-list", "#playlist-autoscroll-list");
+      super('#playlist-autoscroll-list', '#playlist-autoscroll-list');
     }
 
     _findTargets() {
       var observer = this;
-      $(".yt-uix-scroller-scroll-unit").each(function() {
+      $('.yt-uix-scroller-scroll-unit').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
-          var id = node.attr("data-video-id");
-          var thumbnail = node.find(".video-thumb")[0];
+        if (!node.find('.getrating-bar').length) {
+          var id = node.attr('data-video-id');
+          var thumbnail = node.find('.video-thumb')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
@@ -277,37 +296,37 @@ var youtube_score;
 
   class ChannelObserver extends AbstractObserver {
     constructor() {
-      super(".channel-header", "#browse-items-primary");
+      super('.channel-header', '#browse-items-primary');
     }
 
     _findTargets() {
       var observer = this;
       // TODO: Determine if this is a duplicate
-      $(".channels-content-item, .expanded-shelf-content-item-wrapper").each(function() {
+      $('.channels-content-item, .expanded-shelf-content-item-wrapper').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
-          var child = node.find("[data-context-item-id]")[0];
-          var id = $(child).attr("data-context-item-id");
-          var thumbnail = node.find(".yt-thumb")[0];
+        if (!node.find('.getrating-bar').length) {
+          var child = node.find('[data-context-item-id]')[0];
+          var id = $(child).attr('data-context-item-id');
+          var thumbnail = node.find('.yt-thumb')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
-      $(".lohp-thumb-wrap, .c4-featured-content .spf-link").each(function() {
+      $('.lohp-thumb-wrap, .c4-featured-content .spf-link').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
-          var child = node.find("a")[0];
-          var url = $(child).attr("href");
-          var id = getParameters(url).get("v");
-          var thumbnail = node.find(".yt-thumb")[0];
+        if (!node.find('.getrating-bar').length) {
+          var child = node.find('a')[0];
+          var url = $(child).attr('href');
+          var id = getParameters(url).get('v');
+          var thumbnail = node.find('.yt-thumb')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
 
-      $(".feed-item-container [data-context-item-id]").each(function() {
+      $('.feed-item-container [data-context-item-id]').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
-          var id = node.attr("data-context-item-id");
-          var thumbnail = node.find(".yt-thumb")[0];
+        if (!node.find('.getrating-bar').length) {
+          var id = node.attr('data-context-item-id');
+          var thumbnail = node.find('.yt-thumb')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
@@ -316,17 +335,17 @@ var youtube_score;
 
   class ChannelVideosObserver extends AbstractObserver {
     constructor() {
-      super("#channels-browse-content-grid", "#channels-browse-content-grid");
+      super('#channels-browse-content-grid', '#channels-browse-content-grid');
     }
 
     _findTargets() {
       var observer = this;
-      $(".channels-content-item, .expanded-shelf-content-item-wrapper").each(function() {
+      $('.channels-content-item, .expanded-shelf-content-item-wrapper').each(function() {
         var node = $(this);
-        if (!node.find(".getrating-bar").length) {
-          var child = node.find("[data-context-item-id]")[0];
-          var id = $(child).attr("data-context-item-id");
-          var thumbnail = node.find(".yt-thumb")[0];
+        if (!node.find('.getrating-bar').length) {
+          var child = node.find('[data-context-item-id]')[0];
+          var id = $(child).attr('data-context-item-id');
+          var thumbnail = node.find('.yt-thumb')[0];
           cache.getDo(id, observer.decorate.bind(observer, thumbnail));
         }
       });
@@ -335,18 +354,18 @@ var youtube_score;
 
   class EndscreenObserver extends AbstractObserver {
     constructor() {
-      super(".ytp-endscreen-content", ".ytp-endscreen-content");
+      super('.ytp-endscreen-content', '.ytp-endscreen-content');
     }
 
     _findTargets() {
       var observer = this;
-      $(".videowall-still").each(function() {
+      $('.videowall-still').each(function() {
         var node = $(this);
-        var isPlaylist = node.attr("data-is-list") == "true";
-        var isMix = node.attr("data-is-mix") == "true";
-        if (!isPlaylist && !isMix && !node.find(".getrating-bar").length) {
-          var url = node.attr("href");
-          var id = getParameters(url).get("v");
+        var isPlaylist = node.attr('data-is-list') == 'true';
+        var isMix = node.attr('data-is-mix') == 'true';
+        if (!isPlaylist && !isMix && !node.find('.getrating-bar').length) {
+          var url = node.attr('href');
+          var id = getParameters(url).get('v');
           cache.getDo(id, observer.decorate.bind(observer, node));
         }
       });
@@ -392,19 +411,20 @@ var youtube_score;
 
   new ObserverMonitor([
       new FeedObserver(),
+      new HistoryObserver(),
       new OtherFeedObserver(),
       new PlaylistObserver(),
       new QueueObserver(),
       new ChannelObserver(),
       new ChannelVideosObserver(),
       new SearchObserver(),
-      new GroupingObserver("#watch7-container", "#watch7-container", [new RelatedObserver()])
-  ]).bind("#content");
+      new GroupingObserver('#watch7-container', '#watch7-container', [new RelatedObserver()])
+  ]).bind('#content');
 
-  new ObserverMonitor([new PlayerPlaylistObserver()]).bind("#player-playlist");
+  new ObserverMonitor([new PlayerPlaylistObserver()]).bind('#player-playlist');
 
   new ObserverMonitor([
-      new GroupingObserver("#movie_player", "#movie_player", [new EndscreenObserver()])
-  ]).bind("#player-api");
+      new GroupingObserver('#movie_player', '#movie_player', [new EndscreenObserver()])
+  ]).bind('#player-api');
 
 }(youtube_score = youtube_score || {}));
