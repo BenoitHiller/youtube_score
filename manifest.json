@@ -9,14 +9,14 @@
     "128": "share/icon128.png"
   },
   "background": {
-    "scripts": ["vendor/dist/jquery.js","background.js"],
+    "scripts": ["vendor/jquery/dist/jquery.min.js","background.js"],
     "persistent": false
   },
   "content_scripts": [
     {
       "run_at" : "document_end",
       "matches": ["https://www.youtube.com/*"],
-      "js": ["vendor/dist/jquery.js", "ratingCache.js", "observer.js"],
+      "js": ["vendor/jquery/dist/jquery.min.js", "ratingCache.js", "observer.js"],
       "css": ["youtube.css"]
     }
   ]
