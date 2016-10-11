@@ -1,7 +1,7 @@
-var youtube_score;
+var YoutubeScore;
 
-(function(youtube_score) {
-  "use strict";
+(function(YoutubeScore) {
+  'use strict';
 
   var MAX_ITEMS = 50;
   var EXPIRY_TIME = 60 * 60 * 1000;
@@ -10,15 +10,15 @@ var youtube_score;
     this.items = new Map();
     this.querying = new Map();
   }
-  youtube_score.Cache = Cache;
+  YoutubeScore.Cache = Cache;
 
   Cache.prototype.populateLocal = function(key) {
     var cache = this;
 
-    var ids = $("[data-context-item-id]").map(function() {
+    var ids = $('[data-context-item-id]').map(function() {
       return $(this).attr('data-context-item-id');
     });
-    Array.prototype.push.apply(ids, $("[data-vid]").map(function() {
+    Array.prototype.push.apply(ids, $('[data-vid]').map(function() {
       return $(this).attr('data-vid');
     }));
 
@@ -27,21 +27,21 @@ var youtube_score;
     }).filter(function(index) {
       return index < MAX_ITEMS - 1;
     }));
-    
+
     targets.push(key);
 
     var promise = new Promise(function(resolve) {
 
-      chrome.runtime.sendMessage({"id": targets.join(",")}, function(data) {
+      chrome.runtime.sendMessage({'id': targets.join(',')}, function(data) {
         var expiry = Date.now() + EXPIRY_TIME;
         data.forEach(function(element) {
-          cache.set(element.id, { 
-            "expiry": expiry,
-            "likes": parseInt(element.statistics.likeCount),
-            "dislikes": parseInt(element.statistics.dislikeCount)
+          cache.set(element.id, {
+            'expiry': expiry,
+            'likes': parseInt(element.statistics.likeCount),
+            'dislikes': parseInt(element.statistics.dislikeCount)
           });
 
-          if(cache.querying.has(element.id)) {
+          if (cache.querying.has(element.id)) {
             cache.querying.delete(element.id);
           }
         });
@@ -49,7 +49,7 @@ var youtube_score;
         resolve(cache);
       });
     });
-    
+
     targets.forEach(function(element) {
       cache.querying.set(element,promise);
     });
@@ -65,12 +65,12 @@ var youtube_score;
     if (!(this.hasKey(key))) {
       var wrappedFunction = this.wrappedCallback.bind(this,key,callback);
 
-      if(!this.querying.has(key)) {
+      if (!this.querying.has(key)) {
         var promise = this.populateLocal(key);
         promise.then(wrappedFunction);
       } else {
-        var existing_promise = this.querying.get(key);
-        existing_promise.then(wrappedFunction);
+        var existingPromise = this.querying.get(key);
+        existingPromise.then(wrappedFunction);
       }
       return false;
     }
@@ -81,7 +81,7 @@ var youtube_score;
 
   };
 
-  Cache.prototype.set = function(key,data) {
+  Cache.prototype.set = function(key, data) {
     this.items.set(key,data);
   };
 
@@ -105,4 +105,4 @@ var youtube_score;
     return false;
   };
 
-}(youtube_score = youtube_score || {}));
+}(YoutubeScore = YoutubeScore || {}));

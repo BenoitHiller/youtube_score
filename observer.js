@@ -1,6 +1,6 @@
-var youtube_score;
+var YoutubeScore;
 
-;(function(youtube_score) {
+;(function(YoutubeScore) {
   'use strict';
   var CHILDREN = {childList: true};
 
@@ -12,7 +12,10 @@ var youtube_score;
 
     getDiv(percent) {
       var value = percent + '%';
-      var node, bar, text, background;
+      var node;
+      var bar;
+      var text;
+      var background;
       if (this.divCount > 0) {
         this.divCount--;
 
@@ -39,7 +42,7 @@ var youtube_score;
 
   }
 
-  var cache = new youtube_score.Cache();
+  var cache = new YoutubeScore.Cache();
 
   var divCache = new DivCache();
 
@@ -47,7 +50,7 @@ var youtube_score;
     if (data) {
       var percent = data.likes / (data.dislikes + data.likes);
       if (percent > 0.99) {
-        return Math.round(percent * 10000)/100;
+        return Math.round(percent * 10000) / 100;
       } else {
         return Math.round(percent * 100);
       }
@@ -427,4 +430,4 @@ var youtube_score;
       new GroupingObserver('#movie_player', '#movie_player', [new EndscreenObserver()])
   ]).bind('#player-api');
 
-}(youtube_score = youtube_score || {}));
+}(YoutubeScore = YoutubeScore || {}));
