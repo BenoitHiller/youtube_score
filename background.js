@@ -1,6 +1,6 @@
 (function() {
   var API_KEY;
-  if (chrome.runtime.id == 'ocednoekbgodekgmeaadclbhbkjhcmmj') {
+  if (chrome.runtime.id == 'ocednoekbgodekgmeaadclbhbkjhcmmj' || chrome.runtime.id == 'okheidaheancihmfeindbddbjehdogcf') {
     // Set local key for debugging
     API_KEY = 'AIzaSyBP1AutlCTtxEGOW2ophDg4u7PIWJIre_k';
   } else {
