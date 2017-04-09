@@ -36,11 +36,13 @@ var YoutubeScore;
         chrome.runtime.sendMessage({'id': targets.join(',')}, function(data) {
           var expiry = Date.now() + EXPIRY_TIME;
           data.forEach(function(element) {
-            cache.set(element.id, {
-              'expiry': expiry,
-              'likes': parseInt(element.statistics.likeCount),
-              'dislikes': parseInt(element.statistics.dislikeCount)
-            });
+            if (element.statistics) {
+              cache.set(element.id, {
+                'expiry': expiry,
+                'likes': parseInt(element.statistics.likeCount),
+                'dislikes': parseInt(element.statistics.dislikeCount)
+              });
+            }
 
             if (cache.querying.has(element.id)) {
               cache.querying.delete(element.id);
