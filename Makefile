@@ -1,4 +1,4 @@
-JS_FILES := ratingCache.js background.js observer.js vendor/jquery/dist/jquery.min.js
+JS_FILES := background.js observer.js vendor/jquery/dist/jquery.min.js
 STYLES := $(wildcard *.css)
 ICONS := $(wildcard share/icon*.png)
 TARGETS := $(JS_FILES) $(STYLES) $(ICONS) manifest.json LICENSE
