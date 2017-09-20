@@ -16,7 +16,6 @@ So I have made this extension is available under the GPLv3 and it requests permi
   * feed pages
   * video sidebars
   * search results
-  * video end screens
 * Shows the like percentage on hover
 
 # Installation
